@@ -1,0 +1,43 @@
+{
+  "name": "one-arrow-archer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.ts",
+  "scripts": {
+    "dev": "NODE_ENV=development nodemon ./bin/www",
+    "grunt": "grunt",
+    "start": "node ./bin/www"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RedLine555/one-arrow-archer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RedLine555/one-arrow-archer/issues"
+  },
+  "homepage": "https://github.com/RedLine555/one-arrow-archer#readme",
+  "dependencies": {
+    "@types/body-parser": "0.0.33",
+    "@types/cookie-parser": "^1.3.30",
+    "@types/errorhandler": "0.0.30",
+    "@types/method-override": "0.0.29",
+    "@types/morgan": "^1.7.32",
+    "@types/p2": "^0.7.29",
+    "body-parser": "^1.16.1",
+    "cookie-parser": "^1.4.3",
+    "errorhandler": "^1.5.0",
+    "express": "^4.14.1",
+    "method-override": "^2.3.7",
+    "morgan": "^1.8.1",
+    "p2": "^0.7.1"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-ts": "^6.0.0-beta.11",
+    "typescript": "^2.1.6"
+  }
+}
