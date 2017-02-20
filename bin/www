@@ -8,12 +8,15 @@ var http = require("http");
 
 //create http server
 var httpPort = normalizePort(process.env.PORT || 8080);
-var app = server.Server.bootstrap().app;
+var serverInst = server.Server.bootstrap();
+var app = serverInst.app;
 app.set("port", httpPort);
 var httpServer = http.createServer(app);
-
 //listen on provided ports
 httpServer.listen(httpPort);
+
+//initSockets
+serverInst.sockets(httpServer)
 
 //add error handler
 httpServer.on("error", onError);
@@ -76,5 +79,5 @@ function onListening() {
   var bind = typeof addr === "string"
     ? "pipe " + addr
     : "port " + addr.port;
-  debug("Listening on " + bind);
+  console.log("Listening on " + bind);
 }

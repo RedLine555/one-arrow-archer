@@ -4,8 +4,10 @@ const cookieParser = require("cookie-parser");
 const express = require("express");
 const path = require("path");
 const p2 = require("p2");
+const socketIo = require("socket.io");
 const errorHandler = require("errorhandler");
 const methodOverride = require("method-override");
+const index_1 = require("./routes/index");
 class Server {
     static bootstrap() {
         return new Server();
@@ -15,12 +17,13 @@ class Server {
         this.config();
         this.routes();
         this.api();
-        this.testP2();
     }
     api() {
     }
     config() {
         this.app.use(express.static(path.join(__dirname, "public")));
+        this.app.set('view engine', 'ejs');
+        this.app.use('/public', express.static(__dirname + '/public'));
         this.app.use(bodyParser.json());
         this.app.use(bodyParser.urlencoded({
             extended: true
@@ -34,6 +37,16 @@ class Server {
         this.app.use(errorHandler());
     }
     routes() {
+        let router;
+        router = express.Router();
+        index_1.IndexRoute.create(router);
+        this.app.use(router);
+    }
+    sockets(server) {
+        var io = socketIo(server);
+        io.sockets.on('connection', function (socket) {
+            console.log('connected!');
+        });
     }
     testP2() {
         var world = new p2.World({
@@ -55,7 +68,6 @@ class Server {
         var timeStep = 1 / 60;
         setInterval(function () {
             world.step(timeStep);
-            console.log("Circle y position: " + circleBody.position[1]);
         }, 1000 * timeStep);
     }
 }

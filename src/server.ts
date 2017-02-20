@@ -4,9 +4,13 @@ import * as express from "express";
 import * as logger from "morgan";
 import * as path from "path";
 import * as p2 from "p2";
+import * as socketIo from "socket.io";
+import * as http from "http";
 
 import errorHandler = require("errorhandler");
 import methodOverride = require("method-override");
+
+import { IndexRoute } from "./routes/index";
 
 /**
  * The server.
@@ -48,7 +52,7 @@ export class Server {
         //add api
         this.api();
 
-        this.testP2();
+        //this.testP2();
     }
 
     /**
@@ -71,8 +75,12 @@ export class Server {
         //add static paths
         this.app.use(express.static(path.join(__dirname, "public")));
 
+        this.app.set('view engine', 'ejs');
         //use logger middlware
         //this.app.use(logger("dev"));
+        
+        //client files
+        this.app.use('/public', express.static(__dirname + '/public') );
 
         //use json form parser middlware
         this.app.use(bodyParser.json());
@@ -104,8 +112,22 @@ export class Server {
      * @class Server
      * @method api
      */
-    public routes() {
-        //empty for now
+    private routes() {
+        let router: express.Router;
+        router = express.Router();
+
+        //IndexRoute
+        IndexRoute.create(router);
+
+        //use router middleware
+        this.app.use(router);
+    }
+
+    public sockets(server) {
+        var io = socketIo(server);
+        io.sockets.on('connection', function(socket){
+            console.log('connected!');
+        })
     }
 
     public testP2() {
@@ -149,7 +171,7 @@ export class Server {
 
             // Print the circle position to console. 
             // Could be replaced by a render call. 
-            console.log("Circle y position: " + circleBody.position[1]);
+            //console.log("Circle y position: " + circleBody.position[1]);
 
         }, 1000 * timeStep);
     }
