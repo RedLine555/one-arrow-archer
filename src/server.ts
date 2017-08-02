@@ -6,6 +6,7 @@ import * as path from "path";
 import * as p2 from "p2";
 import * as socketIo from "socket.io";
 import * as http from "http";
+import { GameEngine } from "./game/gameEngine";
 
 import errorHandler = require("errorhandler");
 import methodOverride = require("method-override");
@@ -122,12 +123,22 @@ export class Server {
         //use router middleware
         this.app.use(router);
     }
-
+    public GameEngine = new GameEngine();
     public sockets(server) {
         var io = socketIo(server);
-        io.sockets.on('connection', function(socket){
-            console.log('connected!');
-        })
+        io.sockets.on('connection', (socket: any) => {
+            socket.id = Math.random().toString().split('.')[1];
+
+            this.GameEngine.addPlayer(socket);
+
+            socket.on('disconnect', ()=>{
+                this.GameEngine.removePlayer(socket);
+            })
+
+            socket.on('input', (data)=>{
+                this.GameEngine.input(socket, data);
+            })
+        });
     }
 
     public testP2() {

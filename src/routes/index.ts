@@ -46,8 +46,9 @@ export class IndexRoute extends BaseRoute {
    * @next {NextFunction} Execute the next method.
    */
   public index(req: Request, res: Response, next: NextFunction) {
-    this.addScript("https://cdn.socket.io/socket.io-1.7.3");
-    this.addScript("js/game.js");
+    this.addScript("/socket.io/socket.io.js");
+    this.addScript("/lib/js/ocanvas.min.js");
+    this.addScript("/js/game.js");
 
     //set options
     let options: Object = {

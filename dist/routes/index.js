@@ -11,8 +11,9 @@ class IndexRoute extends route_1.BaseRoute {
         super();
     }
     index(req, res, next) {
-        this.addScript("https://cdn.socket.io/socket.io-1.7.3");
-        this.addScript("js/game.js");
+        this.addScript("/socket.io/socket.io.js");
+        this.addScript("/lib/js/ocanvas.min.js");
+        this.addScript("/js/game.js");
         let options = {
             "message": "Welcome to the Tour of Heros"
         };

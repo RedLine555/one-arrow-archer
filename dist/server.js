@@ -5,18 +5,20 @@ const express = require("express");
 const path = require("path");
 const p2 = require("p2");
 const socketIo = require("socket.io");
+const gameEngine_1 = require("./game/gameEngine");
 const errorHandler = require("errorhandler");
 const methodOverride = require("method-override");
 const index_1 = require("./routes/index");
 class Server {
-    static bootstrap() {
-        return new Server();
-    }
     constructor() {
+        this.GameEngine = new gameEngine_1.GameEngine();
         this.app = express();
         this.config();
         this.routes();
         this.api();
+    }
+    static bootstrap() {
+        return new Server();
     }
     api() {
     }
@@ -44,8 +46,15 @@ class Server {
     }
     sockets(server) {
         var io = socketIo(server);
-        io.sockets.on('connection', function (socket) {
-            console.log('connected!');
+        io.sockets.on('connection', (socket) => {
+            socket.id = Math.random().toString().split('.')[1];
+            this.GameEngine.addPlayer(socket);
+            socket.on('disconnect', () => {
+                this.GameEngine.removePlayer(socket);
+            });
+            socket.on('input', (data) => {
+                this.GameEngine.input(socket, data);
+            });
         });
     }
     testP2() {
