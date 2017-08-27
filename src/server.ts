@@ -127,9 +127,8 @@ export class Server {
     public sockets(server) {
         var io = socketIo(server);
         io.sockets.on('connection', (socket: any) => {
-            socket.id = Math.random().toString().split('.')[1];
-
             this.GameEngine.addPlayer(socket);
+            console.log('connected '+socket.id)
 
             socket.on('disconnect', ()=>{
                 this.GameEngine.removePlayer(socket);
@@ -139,6 +138,8 @@ export class Server {
                 this.GameEngine.input(socket, data);
             })
         });
+
+        this.GameEngine.start();
     }
 
     public testP2() {

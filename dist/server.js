@@ -47,8 +47,8 @@ class Server {
     sockets(server) {
         var io = socketIo(server);
         io.sockets.on('connection', (socket) => {
-            socket.id = Math.random().toString().split('.')[1];
             this.GameEngine.addPlayer(socket);
+            console.log('connected ' + socket.id);
             socket.on('disconnect', () => {
                 this.GameEngine.removePlayer(socket);
             });
@@ -56,6 +56,7 @@ class Server {
                 this.GameEngine.input(socket, data);
             });
         });
+        this.GameEngine.start();
     }
     testP2() {
         var world = new p2.World({
