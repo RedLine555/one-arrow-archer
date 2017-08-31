@@ -1,6 +1,7 @@
 export class Entity {
     x: number = 200;
     y: number = 200;
+    rotation: number = 200;
     spdX: number = 0;
     spdY: number = 0;
 
@@ -18,6 +19,6 @@ export class Entity {
         this.y += this.spdY;
     }
 
-    protected static list = {}
+    static list = {}
 
 }

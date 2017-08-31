@@ -28,6 +28,9 @@ class GameEngine {
             case 'down':
                 player.pressingDown = data.state;
                 break;
+            case 'mouseAngle':
+                player.target = data.state;
+                break;
         }
     }
     start() {
@@ -39,7 +42,7 @@ class GameEngine {
             for (let socket in this.SOCKET_LIST) {
                 this.SOCKET_LIST[socket].emit('newPosition', pack);
             }
-        }, 1000 / 25);
+        }, 1000 / 20);
     }
 }
 exports.GameEngine = GameEngine;

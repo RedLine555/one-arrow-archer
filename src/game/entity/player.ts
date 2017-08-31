@@ -1,11 +1,17 @@
-import { Entity } from './entity'
+import { Entity } from './entity';
+import { Arrow } from './arrow';
 
 export class Player extends Entity {
     maxSpeed: number = 10;
+    rotationSpeed: number = 10;
+    rotation: number = 10;
+    target: {x: number, y:number} = {x:0,y:0};
     pressingRight: boolean = false;
     pressingLeft: boolean = false;
     pressingUp: boolean = false;
     pressingDown: boolean = false;
+    pressingAttack: boolean = false;
+    mouseAngle: number = 0;
 
     socket: any;
 
@@ -18,7 +24,14 @@ export class Player extends Entity {
 
     update() {
         this.updateSpeed();
+        this.updateRotation();
         super.update();
+    }
+
+    shoot(angle) {
+        let arrow = new Arrow(angle);
+        arrow.x = this.x;
+        arrow.y = this.y;
     }
 
     updateSpeed() {
@@ -37,7 +50,33 @@ export class Player extends Entity {
             this.spdY = 0;
     }
 
-    static list = {};
+    updateRotation() {
+        let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x) / Math.PI * 180;
+        if (angle < 0)
+            angle += 360;
+        if (angle > 360) {
+            angle -= 360;
+        }
+        let diff = angle - this.rotation;
+        if (diff < 0)
+            diff += 360;
+        if (diff > 360) {
+            diff -= 360;
+        }
+        if (diff <= this.rotationSpeed)
+            this.rotation = angle;
+        else if (diff < 180) 
+            this.rotation += this.rotationSpeed;  
+        else
+            this.rotation -= this.rotationSpeed;  
+
+        if (this.rotation < 0)
+            this.rotation += 360;
+        if (this.rotation > 360) {
+            this.rotation -= 360;
+        }
+        console.log(this.rotation);
+    }
     
     static update() {
         let pack = [];
@@ -47,7 +86,8 @@ export class Player extends Entity {
             pack.push({
                 id: player.id,
                 x: player.x,
-                y: player.y
+                y: player.y,
+                rotation: player.rotation
             })
         }
         return pack;

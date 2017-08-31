@@ -5,6 +5,9 @@ var canvas = oCanvas.create({
 	background: "#eee",
 	//fps: 60
 });
+var chatText = document.getElementById('chat-text');
+var chatForm = document.getElementById('chat-form');
+var chatInput = document.getElementById('chat-input');
 
 var objects = {
 
@@ -24,12 +27,31 @@ socket.on('newPosition', function(data) {
                 radius: 20,
                 fill: "#"+player.id.substring(0,6)
             });
+
+            var line = canvas.display.line({
+                start: { x: 15, y: 0 },
+                end: { x: 25, y: 0 },
+                stroke: "3px #000",
+                cap: "round"
+            });
+
+            ellipse.addChild(line);
+
+            for(var i = 0; i < 4; i++) {
+                var linep = canvas.display.line({
+                    start: { x: 30 + i*20, y: 0 },
+                    end: { x: 40 + i*20, y: 0 },
+                    stroke: "1px #444"
+                });
+    
+                ellipse.addChild(linep);
+            }
     
             canvas.addChild(ellipse);
             objects[player.id] = ellipse;
-
-            console.log('New ' + player.id);
         }
+
+        objects[player.id].rotateTo(player.rotation);
     })
 
     data.arrows.forEach(function(arrow) {
@@ -60,6 +82,20 @@ socket.on('newPosition', function(data) {
     canvas.draw.redraw();
 })
 
+socket.on('addToChat', function(message) {
+    chatText.innerHTML += '<div>'+message+'</div>';
+})
+
+chatForm.onsubmit = function(e) {
+    e.preventDefault();
+    if (chatInput.value[0] === '/') {
+        socket.emit('evalServer', chatInput.value.slice(1));
+    } else {
+        socket.emit('msgToServer', chatInput.value);
+    }
+    chatInput.value = '';
+}
+
 document.onkeydown = function(event) {
     if (event.keyCode === 68)   //d
         socket.emit('input', {inputId: 'right', state: true})
@@ -81,3 +117,15 @@ document.onkeyup = function(event) {
     else if (event.keyCode === 87)   //w
         socket.emit('input', {inputId: 'up', state: false})
 }
+
+canvas.bind("mousedown", function() {
+    socket.emit('input', {inputId: 'attack', state: true})
+})
+
+canvas.bind("mouseup", function() {
+    socket.emit('input', {inputId: 'attack', state: false})
+})
+
+canvas.bind("mousemove", function() {
+    socket.emit('input', {inputId: 'mouseAngle', state: {x : canvas.mouse.x, y : canvas.mouse.y}});
+})

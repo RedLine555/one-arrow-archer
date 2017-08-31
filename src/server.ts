@@ -134,6 +134,16 @@ export class Server {
                 this.GameEngine.removePlayer(socket);
             })
 
+            socket.on('msgToServer', (data)=>{
+                var playerName = socket.id;
+                io.sockets.emit('addToChat', playerName + ':' + data);
+            });
+
+            socket.on('evalServer', (data)=>{
+                var res = eval(data);
+                socket.emit('addToChat', 'Server:' + data);
+            });
+
             socket.on('input', (data)=>{
                 this.GameEngine.input(socket, data);
             })

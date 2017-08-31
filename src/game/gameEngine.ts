@@ -21,6 +21,7 @@ export class GameEngine {
             case 'left': player.pressingLeft = data.state; break;
             case 'up': player.pressingUp = data.state; break;
             case 'down': player.pressingDown = data.state; break;
+            case 'mouseAngle': player.target = data.state; break;
         }
     }
 
@@ -34,6 +35,6 @@ export class GameEngine {
             for (let socket in this.SOCKET_LIST) {
                 this.SOCKET_LIST[socket].emit('newPosition', pack);
             }
-        }, 1000/25);
+        }, 1000/20);
     }
 }
