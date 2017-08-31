@@ -22,6 +22,7 @@ export class GameEngine {
             case 'up': player.pressingUp = data.state; break;
             case 'down': player.pressingDown = data.state; break;
             case 'mouseAngle': player.target = data.state; break;
+            case 'attack': player.isCharging = data.state; break;
         }
     }
 

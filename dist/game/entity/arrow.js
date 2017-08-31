@@ -20,6 +20,7 @@ class Arrow extends entity_1.Entity {
             let arrow = Arrow.list[i];
             arrow.update();
             pack.push({
+                id: arrow.id,
                 x: arrow.x,
                 y: arrow.y
             });
@@ -27,4 +28,5 @@ class Arrow extends entity_1.Entity {
         return pack;
     }
 }
+Arrow.list = {};
 exports.Arrow = Arrow;

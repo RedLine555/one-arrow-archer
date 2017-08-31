@@ -24,10 +24,13 @@ export class Arrow extends Entity {
             let arrow:Arrow = Arrow.list[i];
             arrow.update();
             pack.push({
+                id: arrow.id,
                 x: arrow.x,
                 y: arrow.y
             })
         }
         return pack;
     }
+
+    static list = {}
 }

@@ -19,6 +19,4 @@ export class Entity {
         this.y += this.spdY;
     }
 
-    static list = {}
-
 }

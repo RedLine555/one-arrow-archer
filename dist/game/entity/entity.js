@@ -16,5 +16,4 @@ class Entity {
         this.y += this.spdY;
     }
 }
-Entity.list = {};
 exports.Entity = Entity;

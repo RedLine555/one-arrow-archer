@@ -3,7 +3,18 @@ import { Arrow } from './arrow';
 
 export class Player extends Entity {
     maxSpeed: number = 10;
+    get MaxSpeed(): number {
+        return this.isCharging ? 0.4 * this.maxSpeed : this.maxSpeed;
+    }
     rotationSpeed: number = 10;
+    get RotationSpeed(): number {
+        return this.isCharging ? 0.4 * this.rotationSpeed : this.rotationSpeed;
+    }
+
+    chargeSpeed: number = 1000/20;
+    chargePower: number = 0;
+    chargeLimit: number = 2000;
+    isCharging: boolean = false;
     rotation: number = 10;
     target: {x: number, y:number} = {x:0,y:0};
     pressingRight: boolean = false;
@@ -25,27 +36,22 @@ export class Player extends Entity {
     update() {
         this.updateSpeed();
         this.updateRotation();
+        this.updateShoot();
         super.update();
-    }
-
-    shoot(angle) {
-        let arrow = new Arrow(angle);
-        arrow.x = this.x;
-        arrow.y = this.y;
     }
 
     updateSpeed() {
         if (this.pressingRight)
-            this.spdX = this.maxSpeed;
+            this.spdX = this.MaxSpeed;
         else if (this.pressingLeft)
-            this.spdX = -this.maxSpeed;
+            this.spdX = -this.MaxSpeed;
         else
             this.spdX = 0;
 
         if (this.pressingDown)
-            this.spdY = this.maxSpeed;
+            this.spdY = this.MaxSpeed;
         else if (this.pressingUp)
-            this.spdY = -this.maxSpeed;
+            this.spdY = -this.MaxSpeed;
         else
             this.spdY = 0;
     }
@@ -63,19 +69,31 @@ export class Player extends Entity {
         if (diff > 360) {
             diff -= 360;
         }
-        if (diff <= this.rotationSpeed)
+        if (diff <= this.RotationSpeed)
             this.rotation = angle;
         else if (diff < 180) 
-            this.rotation += this.rotationSpeed;  
+            this.rotation += this.RotationSpeed;  
         else
-            this.rotation -= this.rotationSpeed;  
+            this.rotation -= this.RotationSpeed;  
 
         if (this.rotation < 0)
             this.rotation += 360;
         if (this.rotation > 360) {
             this.rotation -= 360;
         }
-        console.log(this.rotation);
+    }
+
+    updateShoot() {
+        if (this.isCharging) {
+            this.chargePower += this.chargeSpeed;
+            if (this.chargePower > this.chargeLimit)
+                this.chargePower = this.chargeLimit;
+        } else if (this.chargePower > 0) {
+            this.chargePower = 0;
+            let arrow = new Arrow(this.rotation);
+            arrow.x = this.x;
+            arrow.y = this.y;
+        }
     }
     
     static update() {
@@ -92,4 +110,6 @@ export class Player extends Entity {
         }
         return pack;
     }
+
+    static list = {}
 }

@@ -31,6 +31,9 @@ class GameEngine {
             case 'mouseAngle':
                 player.target = data.state;
                 break;
+            case 'attack':
+                player.isCharging = data.state;
+                break;
         }
     }
     start() {
