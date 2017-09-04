@@ -59,14 +59,16 @@ socket.on('newPosition', function(data) {
 
             ellipse.addChild(line);
 
-            for(var i = 0; i < 4; i++) {
-                var linep = canvas.display.line({
-                    start: { x: 30 + i*20, y: 0 },
-                    end: { x: 40 + i*20, y: 0 },
-                    stroke: "1px #444"
-                });
-    
-                ellipse.addChild(linep);
+            if (own_id === player.id) {
+                for(var i = 0; i < 4; i++) {
+                    var linep = canvas.display.line({
+                        start: { x: 30 + i*20, y: 0 },
+                        end: { x: 40 + i*20, y: 0 },
+                        stroke: "1px #444"
+                    });
+        
+                    ellipse.addChild(linep);
+                }
             }
     
             canvas.addChild(ellipse);
