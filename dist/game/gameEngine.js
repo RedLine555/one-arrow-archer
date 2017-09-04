@@ -1,6 +1,7 @@
 "use strict";
 const player_1 = require("./entity/player");
 const arrow_1 = require("./entity/arrow");
+const gameConstants_1 = require("./gameConstants");
 class GameEngine {
     constructor() {
         this.SOCKET_LIST = {};
@@ -32,7 +33,8 @@ class GameEngine {
                 player.target = data.state;
                 break;
             case 'attack':
-                player.isCharging = data.state;
+                if (player.haveArrow)
+                    player.isCharging = data.state;
                 break;
         }
     }
@@ -45,7 +47,7 @@ class GameEngine {
             for (let socket in this.SOCKET_LIST) {
                 this.SOCKET_LIST[socket].emit('newPosition', pack);
             }
-        }, 1000 / 20);
+        }, gameConstants_1.Constants.deltaTime);
     }
 }
 exports.GameEngine = GameEngine;

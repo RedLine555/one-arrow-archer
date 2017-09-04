@@ -129,8 +129,10 @@ export class Server {
         io.sockets.on('connection', (socket: any) => {
             this.GameEngine.addPlayer(socket);
             console.log('connected '+socket.id)
+            socket.emit('init', {id: socket.id});
 
             socket.on('disconnect', ()=>{
+                console.log('disconnected '+socket.id)
                 this.GameEngine.removePlayer(socket);
             })
 

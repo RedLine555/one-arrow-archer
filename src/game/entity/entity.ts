@@ -17,6 +17,17 @@ export class Entity {
     updatePosition() {
         this.x += this.spdX;
         this.y += this.spdY;
+        if (this.x > 1500)
+            this.x -= 1500;
+        else if (this.x < 0)
+            this.x += 1500;
+        if (this.y > 700)
+            this.y -= 700;
+        else if (this.y < 0)
+            this.y += 700;
+    }
+    getDistance(point) {
+        return Math.sqrt(Math.pow(this.x - point.x, 2) + Math.pow(this.y - point.y, 2));
     }
 
 }

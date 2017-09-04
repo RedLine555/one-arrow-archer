@@ -1,5 +1,6 @@
 import { Entity } from './entity';
 import { Arrow } from './arrow';
+import { Constants } from '../gameConstants';
 
 export class Player extends Entity {
     maxSpeed: number = 10;
@@ -11,7 +12,9 @@ export class Player extends Entity {
         return this.isCharging ? 0.4 * this.rotationSpeed : this.rotationSpeed;
     }
 
-    chargeSpeed: number = 1000/20;
+    haveArrow: boolean = true;
+
+    chargeSpeed: number = Constants.deltaTime;
     chargePower: number = 0;
     chargeLimit: number = 2000;
     isCharging: boolean = false;
@@ -60,27 +63,26 @@ export class Player extends Entity {
         let angle = Math.atan2(this.target.y - this.y, this.target.x - this.x) / Math.PI * 180;
         if (angle < 0)
             angle += 360;
-        if (angle > 360) {
+        else if (angle > 360)
             angle -= 360;
-        }
         let diff = angle - this.rotation;
-        if (diff < 0)
-            diff += 360;
-        if (diff > 360) {
-            diff -= 360;
-        }
-        if (diff <= this.RotationSpeed)
+        if (Math.abs(diff) <= this.RotationSpeed)
             this.rotation = angle;
-        else if (diff < 180) 
-            this.rotation += this.RotationSpeed;  
-        else
-            this.rotation -= this.RotationSpeed;  
+        else {
+            if (diff < 0)
+                diff += 360;
+            else if (diff > 360)
+                diff -= 360;
+            if (diff < 180) 
+                this.rotation += this.RotationSpeed;  
+            else
+                this.rotation -= this.RotationSpeed;  
+        }
 
         if (this.rotation < 0)
             this.rotation += 360;
-        if (this.rotation > 360) {
+        else if (this.rotation > 360)
             this.rotation -= 360;
-        }
     }
 
     updateShoot() {
@@ -89,8 +91,9 @@ export class Player extends Entity {
             if (this.chargePower > this.chargeLimit)
                 this.chargePower = this.chargeLimit;
         } else if (this.chargePower > 0) {
+            this.haveArrow = false;
+            let arrow = new Arrow(this.id, this.rotation, this.chargePower / this.chargeLimit);
             this.chargePower = 0;
-            let arrow = new Arrow(this.rotation);
             arrow.x = this.x;
             arrow.y = this.y;
         }
@@ -105,7 +108,9 @@ export class Player extends Entity {
                 id: player.id,
                 x: player.x,
                 y: player.y,
-                rotation: player.rotation
+                rotation: player.rotation,
+                charge: player.chargePower / player.chargeLimit,
+                haveArrow: player.haveArrow
             })
         }
         return pack;

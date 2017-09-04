@@ -1,17 +1,51 @@
 "use strict";
 const entity_1 = require("./entity");
+const player_1 = require("./player");
+const gameConstants_1 = require("../gameConstants");
 class Arrow extends entity_1.Entity {
-    constructor(angle) {
+    constructor(parent, angle, power) {
         super();
-        this.timer = 1;
-        this.toRemove = false;
-        this.spdX = Math.cos(angle / 180 * Math.PI) * 10;
-        this.spdY = Math.sin(angle / 180 * Math.PI) * 10;
+        this.timer = 1000;
+        this.timerRemove = 0;
+        this.parent = '_';
+        this.isFlying = true;
+        power = power + 1;
+        this.spdX = Math.cos(angle / 180 * Math.PI) * 15 * power;
+        this.spdY = Math.sin(angle / 180 * Math.PI) * 15 * power;
+        this.parent = parent;
         Arrow.list[this.id] = this;
     }
     update() {
-        if (this.timer++ > 100)
-            this.toRemove = true;
+        if (this.isFlying) {
+            if (this.timer <= 0) {
+                this.isFlying = false;
+                this.spdX = 0;
+                this.spdY = 0;
+            }
+            else {
+                this.timer -= gameConstants_1.Constants.deltaTime;
+            }
+            for (let i in player_1.Player.list) {
+                if (player_1.Player.list[i].id !== this.parent && this.getDistance(player_1.Player.list[i]) < 20) {
+                    this.isFlying = false;
+                    this.spdX = 0;
+                    this.spdY = 0;
+                    delete player_1.Player.list[i];
+                }
+            }
+        }
+        else {
+            console.log(this.timerRemove);
+            if (this.timerRemove++ >= 1000)
+                delete Arrow.list[this.id];
+            for (let i in player_1.Player.list) {
+                if (!player_1.Player.list[i].haveArrow && this.getDistance(player_1.Player.list[i]) < 20) {
+                    this.timerRemove = 0;
+                    delete Arrow.list[this.id];
+                    player_1.Player.list[i].haveArrow = true;
+                }
+            }
+        }
         super.update();
     }
     static update() {

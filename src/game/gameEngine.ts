@@ -1,5 +1,6 @@
 import { Player } from "./entity/player";
 import { Arrow } from "./entity/arrow";
+import { Constants } from "./gameConstants";
 
 export class GameEngine {
     public SOCKET_LIST = {}
@@ -22,7 +23,7 @@ export class GameEngine {
             case 'up': player.pressingUp = data.state; break;
             case 'down': player.pressingDown = data.state; break;
             case 'mouseAngle': player.target = data.state; break;
-            case 'attack': player.isCharging = data.state; break;
+            case 'attack': if (player.haveArrow) player.isCharging = data.state; break;
         }
     }
 
@@ -36,6 +37,6 @@ export class GameEngine {
             for (let socket in this.SOCKET_LIST) {
                 this.SOCKET_LIST[socket].emit('newPosition', pack);
             }
-        }, 1000/20);
+        }, Constants.deltaTime);
     }
 }

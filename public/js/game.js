@@ -5,6 +5,23 @@ var canvas = oCanvas.create({
 	background: "#eee",
 	//fps: 60
 });
+var chargeIndicator = canvas.display.rectangle({
+	x: 750,
+	y: 630,
+	width: 50,
+    height: 50,
+    origin: { x: "center", y: "center" },
+	fill: "#000"
+});
+var arrowIndicator = canvas.display.image({
+	x: 750,
+	y: 550,
+	origin: { x: "center", y: "center" },
+    image: "img/arrow.png",
+    width: 100,
+});
+canvas.addChild(chargeIndicator);
+canvas.addChild(arrowIndicator);
 var chatText = document.getElementById('chat-text');
 var chatForm = document.getElementById('chat-form');
 var chatInput = document.getElementById('chat-input');
@@ -13,6 +30,11 @@ var objects = {
 
 }
 var present = [];
+var own_id = '';
+
+socket.on('init', function(data) {
+    own_id = data.id;
+})
 
 socket.on('newPosition', function(data) {
 
@@ -50,7 +72,10 @@ socket.on('newPosition', function(data) {
             canvas.addChild(ellipse);
             objects[player.id] = ellipse;
         }
-
+        if (own_id === player.id) {
+            chargeIndicator.scaleTo(player.charge * 1200, 50);
+            player.haveArrow ? arrowIndicator.moveTo(750,600) : arrowIndicator.moveTo(-500, 0);
+        }
         objects[player.id].rotateTo(player.rotation);
     })
 

@@ -1,21 +1,55 @@
 import { Entity } from './entity'
+import { Player } from './player'
+import { Constants } from '../gameConstants';
 
 export class Arrow extends Entity {
 
-    timer: number = 1;
-    toRemove: boolean = false;
+    timer: number = 1000;
+    timerRemove: number = 0;
+    parent: string = '_';
+    isFlying: boolean = true;
 
-    constructor(angle) {
+    constructor(parent, angle, power) {
         super();
-        this.spdX = Math.cos(angle/180*Math.PI) * 10;
-        this.spdY = Math.sin(angle/180*Math.PI) * 10;
+        power = power + 1;
+        this.spdX = Math.cos(angle/180*Math.PI) * 15 * power;
+        this.spdY = Math.sin(angle/180*Math.PI) * 15 * power;
+        this.parent = parent;
         Arrow.list[this.id] = this;
     }
 
     update() {
-        if (this.timer++ > 100)
-            this.toRemove = true;
+        if (this.isFlying) {
+            if (this.timer <= 0) {
+                this.isFlying = false;
+                this.spdX = 0;
+                this.spdY = 0;
+            }
+            else {
+                this.timer -= Constants.deltaTime;
+            }
+            for(let i in Player.list) {
+                if (Player.list[i].id !== this.parent && this.getDistance(Player.list[i]) < 20) {
+                    this.isFlying = false;
+                    this.spdX = 0;
+                    this.spdY = 0;
+                    delete Player.list[i];
+                }
+            }
+        } else {
+            console.log(this.timerRemove)
+            if (this.timerRemove++ >= 1000)
+                delete Arrow.list[this.id];
+            for(let i in Player.list) {
+                if (!Player.list[i].haveArrow && this.getDistance(Player.list[i]) < 20) {
+                    this.timerRemove = 0;
+                    delete Arrow.list[this.id];
+                    Player.list[i].haveArrow = true;
+                }
+            }
+        }
         super.update();
+
     }
 
     static update() {
