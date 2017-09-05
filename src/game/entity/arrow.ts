@@ -12,10 +12,11 @@ export class Arrow extends Entity {
     constructor(parent, angle, power) {
         super();
         power = power + 1;
-        this.spdX = Math.cos(angle/180*Math.PI) * 15 * power;
-        this.spdY = Math.sin(angle/180*Math.PI) * 15 * power;
+        this.spdX = Math.cos(angle/180*Math.PI) * 30 * power;
+        this.spdY = Math.sin(angle/180*Math.PI) * 30 * power;
         this.parent = parent;
         Arrow.list[this.id] = this;
+        this.rotation = angle;
     }
 
     update() {
@@ -37,7 +38,6 @@ export class Arrow extends Entity {
                 }
             }
         } else {
-            console.log(this.timerRemove)
             if (this.timerRemove++ >= 1000)
                 delete Arrow.list[this.id];
             for(let i in Player.list) {
@@ -60,7 +60,9 @@ export class Arrow extends Entity {
             pack.push({
                 id: arrow.id,
                 x: arrow.x,
-                y: arrow.y
+                y: arrow.y,
+                rotation: arrow.rotation,
+                isFlying: arrow.isFlying
             })
         }
         return pack;

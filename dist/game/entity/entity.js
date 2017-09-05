@@ -3,7 +3,7 @@ class Entity {
     constructor() {
         this.x = 200;
         this.y = 200;
-        this.rotation = 200;
+        this.rotation = 0;
         this.spdX = 0;
         this.spdY = 0;
         this.id = Math.random().toString().split('.')[1];

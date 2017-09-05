@@ -1,7 +1,7 @@
 export class Entity {
     x: number = 200;
     y: number = 200;
-    rotation: number = 200;
+    rotation: number = 0;
     spdX: number = 0;
     spdY: number = 0;
 

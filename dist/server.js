@@ -9,6 +9,7 @@ const gameEngine_1 = require("./game/gameEngine");
 const errorHandler = require("errorhandler");
 const methodOverride = require("method-override");
 const index_1 = require("./routes/index");
+const account_1 = require("./routes/account");
 class Server {
     constructor() {
         this.GameEngine = new gameEngine_1.GameEngine();
@@ -42,6 +43,7 @@ class Server {
         let router;
         router = express.Router();
         index_1.IndexRoute.create(router);
+        account_1.AccountRoute.create(router);
         this.app.use(router);
     }
     sockets(server) {

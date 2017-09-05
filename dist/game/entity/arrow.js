@@ -10,10 +10,11 @@ class Arrow extends entity_1.Entity {
         this.parent = '_';
         this.isFlying = true;
         power = power + 1;
-        this.spdX = Math.cos(angle / 180 * Math.PI) * 15 * power;
-        this.spdY = Math.sin(angle / 180 * Math.PI) * 15 * power;
+        this.spdX = Math.cos(angle / 180 * Math.PI) * 30 * power;
+        this.spdY = Math.sin(angle / 180 * Math.PI) * 30 * power;
         this.parent = parent;
         Arrow.list[this.id] = this;
+        this.rotation = angle;
     }
     update() {
         if (this.isFlying) {
@@ -35,7 +36,6 @@ class Arrow extends entity_1.Entity {
             }
         }
         else {
-            console.log(this.timerRemove);
             if (this.timerRemove++ >= 1000)
                 delete Arrow.list[this.id];
             for (let i in player_1.Player.list) {
@@ -56,7 +56,9 @@ class Arrow extends entity_1.Entity {
             pack.push({
                 id: arrow.id,
                 x: arrow.x,
-                y: arrow.y
+                y: arrow.y,
+                rotation: arrow.rotation,
+                isFlying: arrow.isFlying
             });
         }
         return pack;

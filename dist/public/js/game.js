@@ -86,15 +86,23 @@ socket.on('newPosition', function(data) {
         if (objects[arrow.id]) {
             objects[arrow.id].moveTo(arrow.x, arrow.y);
         } else {
-            var ellipse = canvas.display.ellipse({
+            var arrow_img = canvas.display.image({
                 x: arrow.x,
                 y: arrow.y,
-                radius: 5,
-                fill: "#a00"
+                origin: { x: "center", y: "center" },
+                image: "img/arrow-fly.png",
+                width: 40,
+                height: 40,
             });
     
-            canvas.addChild(ellipse);
-            objects[arrow.id] = ellipse;
+            canvas.addChild(arrow_img);
+            objects[arrow.id] = arrow_img;
+        }
+
+        if (arrow.isFlying) {
+            objects[arrow.id].rotateTo(arrow.rotation + 180);
+        } else {
+            objects[arrow.id].rotateTo(arrow.rotation > -180 && arrow.rotation < -90 || arrow.rotation < 180 && arrow.rotation > 90 ? 0 : -180);
         }
     })
 
