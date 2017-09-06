@@ -17,13 +17,15 @@ export class GameEngine {
 
     public input(socket, data) {
         let player:Player = Player.list[socket.id];
-        switch (data.inputId) {
-            case 'right': player.pressingRight = data.state; break;
-            case 'left': player.pressingLeft = data.state; break;
-            case 'up': player.pressingUp = data.state; break;
-            case 'down': player.pressingDown = data.state; break;
-            case 'mouseAngle': player.target = data.state; break;
-            case 'attack': if (player.haveArrow) player.isCharging = data.state; break;
+        if (player) {
+            switch (data.inputId) {
+                case 'right': player.pressingRight = data.state; break;
+                case 'left': player.pressingLeft = data.state; break;
+                case 'up': player.pressingUp = data.state; break;
+                case 'down': player.pressingDown = data.state; break;
+                case 'mouseAngle': player.target = data.state; break;
+                case 'attack': if (player.haveArrow) player.isCharging = data.state; break;
+            }
         }
     }
 
