@@ -7,6 +7,7 @@ import * as p2 from "p2";
 import * as socketIo from "socket.io";
 import * as http from "http";
 import { GameEngine } from "./game/gameEngine";
+import { Constants } from "./game/gameConstants";
 
 import errorHandler = require("errorhandler");
 import methodOverride = require("method-override");
@@ -132,7 +133,8 @@ export class Server {
         io.sockets.on('connection', (socket: any) => {
             this.GameEngine.addPlayer(socket);
             console.log('connected '+socket.id)
-            socket.emit('init', {id: socket.id});
+
+            socket.emit('init', {id: socket.id, width: Constants.maxWidth, height:Constants.maxHeight});
 
             socket.on('disconnect', ()=>{
                 console.log('disconnected '+socket.id)

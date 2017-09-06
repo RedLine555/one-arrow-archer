@@ -1,27 +1,9 @@
 var socket = io();
 
-var canvas = oCanvas.create({
-	canvas: "#canvas",
-	background: "#eee",
-	//fps: 60
-});
-var chargeIndicator = canvas.display.rectangle({
-	x: 750,
-	y: 630,
-	width: 50,
-    height: 50,
-    origin: { x: "center", y: "center" },
-	fill: "#000"
-});
-var arrowIndicator = canvas.display.image({
-	x: 750,
-	y: 550,
-	origin: { x: "center", y: "center" },
-    image: "img/arrow.png",
-    width: 100,
-});
-canvas.addChild(chargeIndicator);
-canvas.addChild(arrowIndicator);
+var canvas;
+
+var chargeIndicator;
+var arrowIndicator;
 var chatText = document.getElementById('chat-text');
 var chatForm = document.getElementById('chat-form');
 var chatInput = document.getElementById('chat-input');
@@ -34,6 +16,45 @@ var own_id = '';
 
 socket.on('init', function(data) {
     own_id = data.id;
+
+    document.getElementById("canvas").width = data.width;
+    document.getElementById("canvas").height = data.height;
+
+    canvas = oCanvas.create({
+        canvas: "#canvas",
+        background: "#eee",
+        //fps: 60
+    });
+
+    chargeIndicator = canvas.display.rectangle({
+        x: 750,
+        y: 630,
+        width: 50,
+        height: 50,
+        origin: { x: "center", y: "center" },
+        fill: "#000"
+    });
+    arrowIndicator = canvas.display.image({
+        x: 750,
+        y: 550,
+        origin: { x: "center", y: "center" },
+        image: "img/arrow.png",
+        width: 100,
+    });
+    canvas.addChild(chargeIndicator);
+    canvas.addChild(arrowIndicator);
+
+    canvas.bind("mousedown", function() {
+        socket.emit('input', {inputId: 'attack', state: true})
+    })
+    
+    canvas.bind("mouseup", function() {
+        socket.emit('input', {inputId: 'attack', state: false})
+    })
+    
+    canvas.bind("mousemove", function() {
+        socket.emit('input', {inputId: 'mouseAngle', state: {x : canvas.mouse.x, y : canvas.mouse.y}});
+    })
 })
 
 socket.on('newPosition', function(data) {
@@ -102,7 +123,7 @@ socket.on('newPosition', function(data) {
         if (arrow.isFlying) {
             objects[arrow.id].rotateTo(arrow.rotation + 180);
         } else {
-            objects[arrow.id].rotateTo(arrow.rotation > -180 && arrow.rotation < -90 || arrow.rotation < 180 && arrow.rotation > 90 ? 0 : -180);
+            objects[arrow.id].rotateTo(arrow.rotation < 270 && arrow.rotation > 90 ? 0 : -180);
         }
     })
 
@@ -152,15 +173,3 @@ document.onkeyup = function(event) {
     else if (event.keyCode === 87)   //w
         socket.emit('input', {inputId: 'up', state: false})
 }
-
-canvas.bind("mousedown", function() {
-    socket.emit('input', {inputId: 'attack', state: true})
-})
-
-canvas.bind("mouseup", function() {
-    socket.emit('input', {inputId: 'attack', state: false})
-})
-
-canvas.bind("mousemove", function() {
-    socket.emit('input', {inputId: 'mouseAngle', state: {x : canvas.mouse.x, y : canvas.mouse.y}});
-})

@@ -31,6 +31,8 @@ export class Player extends Entity {
 
     constructor(socket) {
         super();
+        this.x = Math.random() * Constants.maxWidth;
+        this.y = Math.random() * Constants.maxHeight;
         socket.id = this.id;
         this.socket = socket;
         Player.list[this.id] = this;

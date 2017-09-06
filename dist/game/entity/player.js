@@ -20,6 +20,8 @@ class Player extends entity_1.Entity {
         this.pressingDown = false;
         this.pressingAttack = false;
         this.mouseAngle = 0;
+        this.x = Math.random() * gameConstants_1.Constants.maxWidth;
+        this.y = Math.random() * gameConstants_1.Constants.maxHeight;
         socket.id = this.id;
         this.socket = socket;
         Player.list[this.id] = this;

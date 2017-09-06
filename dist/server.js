@@ -6,6 +6,7 @@ const path = require("path");
 const p2 = require("p2");
 const socketIo = require("socket.io");
 const gameEngine_1 = require("./game/gameEngine");
+const gameConstants_1 = require("./game/gameConstants");
 const errorHandler = require("errorhandler");
 const methodOverride = require("method-override");
 const index_1 = require("./routes/index");
@@ -51,7 +52,7 @@ class Server {
         io.sockets.on('connection', (socket) => {
             this.GameEngine.addPlayer(socket);
             console.log('connected ' + socket.id);
-            socket.emit('init', { id: socket.id });
+            socket.emit('init', { id: socket.id, width: gameConstants_1.Constants.maxWidth, height: gameConstants_1.Constants.maxHeight });
             socket.on('disconnect', () => {
                 console.log('disconnected ' + socket.id);
                 this.GameEngine.removePlayer(socket);
